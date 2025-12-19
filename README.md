@@ -3,8 +3,8 @@
 A real-time voice assistant capable of scheduling Google Calendar events and sending confirmation emails.
 
 ## 🔗 Project Links
-- **Live Demo:** [INSERT YOUR VERCEL URL HERE]
-- **Demo Video (Loom):** [INSERT LOOM LINK HERE]
+- **Live Demo:** https://vocal-scheduler.vercel.app/
+- **Demo Video :** https://youtu.be/iMDhDVMPEgY
 
 ## ⚡ Features
 - **Voice Interface:** Built with Vapi.ai for low-latency conversation.
