@@ -77,7 +77,7 @@ async function bookAppointment(name: string, email: string, time: string) {
 
     // A. Put it on YOUR Calendar (So you see it)
     await calendar.events.insert({
-      calendarId: "44e3d9e634a110108f3f647adf998ad57c46ba9c462408f3f291efb3e833ea39@group.calendar.google.com", // Your specific calendar
+      calendarId: process.env.GOOGLE_CALENDAR_ID, // Your specific calendar
       requestBody: {
         summary: `Call with ${name}`,
         description: `Client Email: ${email}`,
