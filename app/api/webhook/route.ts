@@ -1,8 +1,7 @@
 // app/api/webhook/route.ts
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import nodemailer from 'nodemailer'; // <--- NEW IMPORT
-
+import nodemailer from 'nodemailer';
 // 1. SETUP GOOGLE AUTH
 const auth = new google.auth.JWT({
   email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -16,8 +15,8 @@ const calendar = google.calendar({ version: 'v3', auth });
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.MY_EMAIL, // Your Gmail address
-    pass: process.env.GMAIL_APP_PASSWORD, // The App Password you generated
+    user: process.env.MY_EMAIL, 
+    pass: process.env.GMAIL_APP_PASSWORD, 
   },
 });
 
@@ -26,7 +25,7 @@ async function checkAvailability(date: string) {
   try {
     const calendarId = process.env.GOOGLE_CALENDAR_ID;
     
-    // 1. Calculate Time (Force UTC for consistency)
+    // 1. Calculate Time 
     const startTime = new Date(date);
     const endTime = new Date(startTime.getTime() + 30 * 60000); 
 
@@ -44,11 +43,10 @@ async function checkAvailability(date: string) {
       }
     });
 
-    // 3. LOG THE RAW RESPONSE (This is the key!)
+    // 3. LOG THE RAW RESPONSE
     console.log("🤖 Google Response:", JSON.stringify(response.data, null, 2));
 
     // 4. Safely extract busy slots
-    // We use Object.values() to grab the first calendar result, ignoring the specific key ID
     const calendars = response.data.calendars || {};
     const firstCalendarKey = Object.keys(calendars)[0];
     const busySlots = calendars[firstCalendarKey]?.busy || [];
@@ -71,26 +69,24 @@ async function bookAppointment(name: string, email: string, time: string) {
   try {
     console.log(`Booking for ${name} at ${time}`);
     
-    // Convert "human" time to "computer" time
     const startTime = new Date(time);
     const endTime = new Date(startTime.getTime() + 30 * 60000); 
 
-    // A. Put it on YOUR Calendar (So you see it)
+   
     await calendar.events.insert({
-      calendarId: process.env.GOOGLE_CALENDAR_ID, // Your specific calendar
+      calendarId: process.env.GOOGLE_CALENDAR_ID, 
       requestBody: {
         summary: `Call with ${name}`,
         description: `Client Email: ${email}`,
         start: { dateTime: startTime.toISOString() },
         end: { dateTime: endTime.toISOString() },
-        // No "attendees" list here to avoid the Google 403 Error
       },
     });
 
-    // B. Send the Confirmation Email (The "Proof" for the User)
+    // B. Send the Confirmation Email 
     await transporter.sendMail({
       from: `"Riley from Wellness" <${process.env.MY_EMAIL}>`,
-      to: email, // <--- Sends to the user's dynamic email!
+      to: email, 
       subject: 'Appointment Confirmed! ✅',
       text: `Hi ${name},\n\nYour appointment is confirmed for ${startTime.toLocaleString()}.\n\nSee you then!\n- Wellness Partners`,
       html: `
@@ -108,7 +104,6 @@ async function bookAppointment(name: string, email: string, time: string) {
     return "Success! I have booked the slot and sent a confirmation email.";
   } catch (error: any) {
     console.error("Booking Error:", error);
-    // Even if it fails, we tell Vapi why so you can see it in logs
     throw new Error(error.message); 
   }
 }

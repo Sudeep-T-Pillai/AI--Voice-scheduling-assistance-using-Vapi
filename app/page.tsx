@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Vapi from "@vapi-ai/web";
 
-const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_KEY!); // GET THIS FROM VAPI DASHBOARD
+const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_KEY!);
 
 export default function Home() {
   const [connecting, setConnecting] = useState(false);
@@ -24,7 +24,6 @@ export default function Home() {
 
   const startCall = () => {
     setConnecting(true);
-    // Replace with your Assistant ID from Vapi Dashboard
     vapi.start(process.env.NEXT_PUBLIC_ASSISTANT_ID!);
   };
 
